@@ -163,3 +163,66 @@ Error:
   success: false,
   message: "Operation failed"
 }
+
+# Gym Access Flow Contract
+
+## Initial User State
+
+After registration:
+- user does NOT automatically become gym member
+- user enters gym discovery flow
+
+---
+
+# Membership Access Flow
+
+INPUT:
+- selected gym
+- membership package
+
+PROCESS:
+1. Create gym_members_registry document
+2. Activate membership
+3. Enable member features
+
+OUTPUT:
+- Member dashboard unlocked
+
+---
+
+# Daily Access Flow
+
+INPUT:
+- selected gym
+- daily pass
+
+PROCESS:
+1. Create gym_daily_visits document
+2. Allow temporary gym access
+
+OUTPUT:
+- Limited dashboard access
+
+---
+
+# Feature Access Rules
+
+## Membership User
+Can access:
+- QR Membership
+- Streak
+- Points
+- Rank
+- Attendance history
+- Loyalty features
+
+## Daily Visitor
+Can access:
+- Daily check-in
+- Basic gym access
+
+Cannot access:
+- loyalty
+- streak
+- membership QR
+- rank system

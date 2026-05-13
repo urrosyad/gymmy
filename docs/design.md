@@ -54,7 +54,7 @@ Design inspiration:
 | Secondary | #57B2DC |
 | Accent | #BBF6E2 |
 | Dark Background | #121417 |
-| Card Surface | #1E2126 |
+| Card Surface | #0B1B2B |
 
 # Color Usage Rules
 
@@ -111,22 +111,82 @@ Avoid:
 
 # Dark Mode
 
-## Background
-#121417
+# Theme Philosophy
 
-## Surface
-#1E2126
+GYMME uses Light Mode as the default application appearance.
 
-## Primary Text
-#F1F3F4
+Dark mode is optional and user-controlled through settings.
 
-## Secondary Text
-#ADB5BD
+The overall design direction should prioritize:
+- clean white surfaces
+- soft contrast
+- professional fitness-tech SaaS aesthetics
+- high readability in daylight conditions
+
+Avoid:
+- dark-mode-first layouts
+- AMOLED-heavy screens
+- neon cyberpunk aesthetics
+- gaming-style UI
 
 ---
 
-# Core Components
+# Light Theme Foundation
 
+## Background
+#F7F8FA
+
+## Surface
+#FFFFFF
+
+## Primary Text
+#121417
+
+## Secondary Text
+#6B7280
+
+## Divider
+#E5E7EB
+
+---
+
+# Dark Theme Philosophy
+
+Dark mode should:
+- preserve hierarchy consistency
+- preserve spacing consistency
+- preserve typography consistency
+
+Dark mode is secondary,
+not the primary visual identity.
+
+Avoid:
+- pure black backgrounds
+- neon glow effects
+- colorful shadows
+
+# Theme Switching Rules
+
+The application must support:
+- Light Mode
+- Dark Mode
+- System Theme
+
+Default behavior:
+- first install uses Light Mode
+
+User can manually change theme inside settings.
+
+Theme switching must:
+- preserve component consistency
+- preserve spacing rhythm
+- preserve typography scale
+
+Avoid redesigning screens between themes.
+Only adapt colors.
+
+
+# Core Components
 ## GymmeButton
 
 Style:
@@ -395,3 +455,25 @@ When generating UI:
 GYMME should feel like:
 a real scalable fitness SaaS product,
 not an AI-generated concept app.
+
+# Visual Experience Direction
+
+GYMME should feel:
+- native
+- refined
+- balanced
+- tactile
+- believable
+
+Preferred inspiration:
+- Apple Fitness
+- Notion Mobile
+- Stripe Dashboard
+- Nike Training Club
+
+Avoid:
+- futuristic startup landing page aesthetics
+- excessive gradients
+- overly decorative UI
+- oversized illustrations
+

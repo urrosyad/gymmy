@@ -57,6 +57,10 @@ Relasi member dengan gym tertentu.
 | mem_current_points_balance | Number | Total poin |
 | mem_streak_consecutive_days | Number | Total streak check-in |
 | mem_join_timestamp | Timestamp | Tanggal join |
+| mem_membership_type | String | membership / daily |
+| mem_membership_status | String | active / inactive |
+| mem_membership_start_date | Timestamp | Tanggal mulai |
+| mem_membership_end_date | Timestamp | Tanggal expired |
 
 ---
 
@@ -125,6 +129,20 @@ Sistem ranking dan gamifikasi.
 | rank_min_points_threshold | Number | Minimal poin |
 
 ---
+
+# COLLECTION: gym_daily_visits
+
+Riwayat user non-membership.
+
+## Fields
+
+| Field | Type | Description |
+|---|---|---|
+| daily_visit_id_key | String | ID visit |
+| daily_visit_user_uid | String | UID user |
+| daily_visit_gym_id | String | Gym tujuan |
+| daily_visit_checkin_at | Timestamp | Waktu check-in |
+| daily_visit_payment_status | String | paid / pending |
 
 # RELATIONSHIP MAP
 

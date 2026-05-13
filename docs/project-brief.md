@@ -217,10 +217,34 @@ GYMMY harus terasa:
 6. Sistem menyimpan riwayat dan poin
 7. Member melihat streak, rank, dan progres
 
----
+## New User Journey
+
+1. User registers account
+2. User logs in
+3. User enters onboarding dashboard
+4. User selects gym
+5. User chooses:
+   - Membership
+   OR
+   - Daily Access
+
+6. System unlocks features based on access type
+
+# Access Model
+
+## Membership User
+Full feature access.
+
+## Daily Visitor
+Limited feature access.
+
+# Product Philosophy
+
+GYMME is not only a gym membership system,
+but a flexible fitness access ecosystem.
+
 
 ## 10. Fitur Inti Produk
-
 ## 10.1 Autentikasi Multi-Role
 Sistem login tunggal untuk semua user.
 
