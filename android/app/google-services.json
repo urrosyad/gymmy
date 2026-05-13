@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "916994282675",
+    "project_id": "gymmy-saas",
+    "storage_bucket": "gymmy-saas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916994282675:android:d48512068cfdc3496b0cc6",
+        "android_client_info": {
+          "package_name": "com.example.gymmy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsKa9QzaFlZFh0SwRJjJFIXTpHIvrBynk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916994282675:android:bc4cb32724d714ab6b0cc6",
+        "android_client_info": {
+          "package_name": "com.gymme.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsKa9QzaFlZFh0SwRJjJFIXTpHIvrBynk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
