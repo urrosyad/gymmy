@@ -6,6 +6,7 @@ class UserModel extends UserEntity {
     required super.fullName,
     required super.email,
     required super.role,
+    super.hasCompletedBiodata,
   });
 
   factory UserModel.fromMap(String uid, Map<String, dynamic> map) {
@@ -14,6 +15,8 @@ class UserModel extends UserEntity {
       fullName: map['user_full_name'] as String? ?? '',
       email: map['user_email_address'] as String? ?? '',
       role: map['user_global_role'] as String? ?? 'member',
+      hasCompletedBiodata:
+          map['user_has_completed_biodata'] as bool? ?? false,
     );
   }
 
@@ -23,6 +26,9 @@ class UserModel extends UserEntity {
       'user_full_name': fullName,
       'user_email_address': email,
       'user_global_role': role,
+      'user_has_completed_biodata': hasCompletedBiodata,
+      'user_is_active': true,
     };
   }
 }
+

@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymmy/core/providers/onboarding_provider.dart';
 import 'package:gymmy/core/routing/route_names.dart';
-import 'package:gymmy/core/theme/app_colors.dart';
-import 'package:gymmy/core/theme/app_theme.dart';
 import 'package:gymmy/core/widgets/gymmy_button.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -65,116 +63,112 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Using light mode theme for Onboarding to match the requested light theme for auth flow
-    return Theme(
-      data: AppTheme.lightTheme,
-      child: Scaffold(
-        backgroundColor: AppColors.lightBackground,
-        body: SafeArea(
-          child: Column(
-            children: [
-              // Skip Button
-              Align(
-                alignment: Alignment.topRight,
-                child: TextButton(
-                  onPressed: _finishOnboarding,
-                  child: Text(
-                    'Skip',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.lightSecondaryText,
-                      fontWeight: FontWeight.w600,
-                    ),
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Skip Button
+            Align(
+              alignment: Alignment.topRight,
+              child: TextButton(
+                onPressed: _finishOnboarding,
+                child: Text(
+                  'Skip',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              
-              // Page View
-              Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentPage = index;
-                    });
-                  },
-                  itemCount: _pages.length,
-                  itemBuilder: (context, index) {
-                    final page = _pages[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            page.icon,
-                            size: 120,
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(height: 48),
-                          Text(
-                            page.title,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              color: AppColors.lightPrimaryText,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            page.description,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: AppColors.lightSecondaryText,
-                              height: 1.5,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              
-              // Bottom Controls
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  children: [
-                    // Dot indicators
-                    Row(
+            ),
+            
+            // Page View
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemCount: _pages.length,
+                itemBuilder: (context, index) {
+                  final page = _pages[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        _pages.length,
-                        (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          height: 8,
-                          width: _currentPage == index ? 24 : 8,
-                          decoration: BoxDecoration(
-                            color: _currentPage == index
-                                ? AppColors.primary
-                                : AppColors.primary.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(4),
+                      children: [
+                        Icon(
+                          page.icon,
+                          size: 120,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(height: 48),
+                        Text(
+                          page.title,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: theme.colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          page.description,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                            height: 1.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            
+            // Bottom Controls
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                children: [
+                  // Dot indicators
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _pages.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 8,
+                        width: _currentPage == index ? 24 : 8,
+                        decoration: BoxDecoration(
+                          color: _currentPage == index
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.primary.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    // Next/Finish Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: GymmyButton(
-                        text: _currentPage == _pages.length - 1
-                            ? 'Get Started'
-                            : 'Next',
-                        onPressed: _nextPage,
-                      ),
+                  ),
+                  const SizedBox(height: 32),
+                  // Next/Finish Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: GymmyButton(
+                      text: _currentPage == _pages.length - 1
+                          ? 'Get Started'
+                          : 'Next',
+                      onPressed: _nextPage,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

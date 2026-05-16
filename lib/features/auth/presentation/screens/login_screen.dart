@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymmy/core/routing/route_names.dart';
-import 'package:gymmy/core/theme/app_colors.dart';
 import 'package:gymmy/core/widgets/gymmy_button.dart';
 import 'package:gymmy/core/widgets/gymmy_input.dart';
 import 'package:gymmy/features/auth/presentation/providers/auth_provider.dart';

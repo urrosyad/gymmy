@@ -14,13 +14,11 @@ abstract class AuthRepository {
     required String password,
   });
 
-  /// Register a new gym owner and provision a gym tenant.
+  /// Register a new gym owner. Gym setup is done separately via wizard.
   Future<UserEntity> registerOwner({
     required String fullName,
     required String email,
     required String password,
-    required String gymName,
-    required String gymAddress,
   });
 
   /// Sign out the currently authenticated user.

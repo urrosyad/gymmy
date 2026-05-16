@@ -86,8 +86,6 @@ class AuthNotifier extends Notifier<AuthState> {
     required String fullName,
     required String email,
     required String password,
-    required String gymName,
-    required String gymAddress,
   }) async {
     state = state.copyWith(status: AuthStatus.authenticating);
     try {
@@ -95,8 +93,6 @@ class AuthNotifier extends Notifier<AuthState> {
         fullName: fullName,
         email: email,
         password: password,
-        gymName: gymName,
-        gymAddress: gymAddress,
       );
       state = state.copyWith(status: AuthStatus.authenticated, user: user);
     } catch (e) {
@@ -131,6 +127,20 @@ class AuthNotifier extends Notifier<AuthState> {
         status: AuthStatus.error,
         generalError: msg.replaceFirst('Exception: ', ''),
       );
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Refresh user (e.g. after biodata completion updates Firestore)
+  // ---------------------------------------------------------------------------
+  Future<void> refreshUser() async {
+    try {
+      final user = await _getCurrentUserUsecase();
+      if (user != null) {
+        state = state.copyWith(status: AuthStatus.authenticated, user: user);
+      }
+    } catch (_) {
+      // Silently ignore — user remains authenticated
     }
   }
 

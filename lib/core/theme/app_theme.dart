@@ -27,7 +27,32 @@ class AppTheme {
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightPrimaryText,
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: AppColors.lightSurface,
+        indicatorColor: Colors.transparent,
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const IconThemeData(color: AppColors.primary);
+          }
+          return const IconThemeData(color: AppColors.lightSecondaryText);
+        }),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const TextStyle(
+              color: AppColors.primary,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            );
+          }
+          return const TextStyle(
+            color: AppColors.lightSecondaryText,
+            fontSize: 11,
+          );
+        }),
       ),
     );
   }
@@ -56,7 +81,32 @@ class AppTheme {
         backgroundColor: AppColors.darkSurface,
         foregroundColor: AppColors.darkPrimaryText,
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: AppColors.darkSurface,
+        indicatorColor: Colors.transparent,
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const IconThemeData(color: AppColors.primary);
+          }
+          return const IconThemeData(color: AppColors.darkSecondaryText);
+        }),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const TextStyle(
+              color: AppColors.primary,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            );
+          }
+          return const TextStyle(
+            color: AppColors.darkSecondaryText,
+            fontSize: 11,
+          );
+        }),
       ),
     );
   }

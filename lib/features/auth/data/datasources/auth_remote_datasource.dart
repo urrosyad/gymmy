@@ -64,8 +64,6 @@ class AuthRemoteDatasource {
     required String fullName,
     required String email,
     required String password,
-    required String gymName,
-    required String gymAddress,
   }) async {
     final credential = await _auth.createUserWithEmailAndPassword(
       email: email.trim(),
@@ -80,42 +78,12 @@ class AuthRemoteDatasource {
       role: 'owner',
     );
 
-    // Batch write: user profile + gym tenant + default ranks
-    final batch = _firestore.batch();
+    // Only create user profile — gym setup handled by Owner Setup Wizard
+    await _firestore
+        .collection('user_accounts_global')
+        .doc(uid)
+        .set(model.toMap());
 
-    // 1. Global user profile
-    final userRef =
-        _firestore.collection('user_accounts_global').doc(uid);
-    batch.set(userRef, model.toMap());
-
-    // 2. Gym tenant document
-    final gymRef = _firestore.collection('gym_tenants').doc();
-    final gymId = gymRef.id;
-    batch.set(gymRef, {
-      'gt_id_key': gymId,
-      'gt_name_title': gymName.trim(),
-      'gt_address_location': gymAddress.trim(),
-      'gt_owner_uid': uid,
-      'gt_business_license_number': '',
-      'gt_created_at': FieldValue.serverTimestamp(),
-    });
-
-    // 3. Default ranks
-    final ranks = [
-      {'rank_title_name': 'Bronze', 'rank_min_points_threshold': 0},
-      {'rank_title_name': 'Silver', 'rank_min_points_threshold': 500},
-      {'rank_title_name': 'Gold', 'rank_min_points_threshold': 1500},
-    ];
-    for (final rank in ranks) {
-      final rankRef = _firestore.collection('gym_master_ranks').doc();
-      batch.set(rankRef, {
-        'rank_id_key': rankRef.id,
-        'rank_parent_gym_id': gymId,
-        ...rank,
-      });
-    }
-
-    await batch.commit();
     return model;
   }
 

@@ -42,16 +42,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required String fullName,
     required String email,
     required String password,
-    required String gymName,
-    required String gymAddress,
   }) async {
     try {
       return await _datasource.registerOwner(
         fullName: fullName,
         email: email,
         password: password,
-        gymName: gymName,
-        gymAddress: gymAddress,
       );
     } on FirebaseAuthException catch (e) {
       throw _mapFirebaseAuthError(e);

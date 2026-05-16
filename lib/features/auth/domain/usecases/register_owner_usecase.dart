@@ -9,15 +9,11 @@ class RegisterOwnerUsecase {
     required String fullName,
     required String email,
     required String password,
-    required String gymName,
-    required String gymAddress,
   }) {
     return _repository.registerOwner(
       fullName: fullName,
       email: email,
       password: password,
-      gymName: gymName,
-      gymAddress: gymAddress,
     );
   }
 }
