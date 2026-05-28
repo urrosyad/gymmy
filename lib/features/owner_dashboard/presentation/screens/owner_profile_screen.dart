@@ -4,6 +4,7 @@ import 'package:gymmy/core/theme/app_colors.dart';
 import 'package:gymmy/features/auth/presentation/providers/auth_provider.dart';
 import 'package:gymmy/features/gym_tenant/presentation/providers/gym_tenant_provider.dart';
 import 'package:gymmy/features/owner_dashboard/presentation/screens/owner_edit_gym_screen.dart';
+import 'package:gymmy/features/owner_dashboard/presentation/screens/owner_history_screen.dart';
 import 'package:gymmy/features/settings/presentation/screens/theme_settings_screen.dart';
 
 class OwnerProfileScreen extends ConsumerWidget {
@@ -43,6 +44,9 @@ class OwnerProfileScreen extends ConsumerWidget {
         const SizedBox(height: 32),
         _menu(context, icon: Icons.store_outlined, label: 'Edit Profil Gym', subtitle: 'Ubah nama, lokasi, dan deskripsi gym',
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OwnerEditGymScreen()))),
+        const SizedBox(height: 12),
+        _menu(context, icon: Icons.history, label: 'Riwayat Check-in', subtitle: 'Lihat semua aktivitas check-in member',
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const OwnerHistoryScreen()))),
         const SizedBox(height: 12),
         _menu(context, icon: Icons.palette_outlined, label: 'Tampilan', subtitle: 'Atur tema aplikasi',
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ThemeSettingsScreen()))),

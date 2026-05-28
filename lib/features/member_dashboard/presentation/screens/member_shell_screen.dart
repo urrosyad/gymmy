@@ -45,7 +45,10 @@ class MemberShellScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           _action(ctx, icon: Icons.event_available, label: 'Tampilkan QR Kelas', sub: 'Tunjukkan QR ini untuk absensi kelas', onTap: () {
             Navigator.pop(ctx);
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Fitur QR Kelas akan segera tersedia')));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Aktifkan langganan kelas terlebih dahulu untuk mendapatkan QR kelas.'),
+              duration: Duration(seconds: 3),
+            ));
           }),
           const SizedBox(height: 16),
         ])));
@@ -72,15 +75,18 @@ class MemberShellScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(body: navigationShell,
-      bottomNavigationBar: NavigationBar(selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: (i) => _onTap(i, context, ref),
-        destinations: [
-          const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Beranda'),
-          const NavigationDestination(icon: Icon(Icons.fitness_center_outlined), selectedIcon: Icon(Icons.fitness_center), label: 'Gym Saya'),
-          NavigationDestination(icon: Container(width: 52, height: 52, decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-            child: const Icon(Icons.qr_code_scanner, color: AppColors.darkBackground, size: 24)), label: ''),
-          const NavigationDestination(icon: Icon(Icons.history_outlined), selectedIcon: Icon(Icons.history), label: 'Riwayat'),
-          const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profil'),
-        ]));
+      bottomNavigationBar: TooltipVisibility(
+        visible: false,
+        child: NavigationBar(selectedIndex: navigationShell.currentIndex,
+          onDestinationSelected: (i) => _onTap(i, context, ref),
+          destinations: [
+            const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Beranda', tooltip: ''),
+            const NavigationDestination(icon: Icon(Icons.fitness_center_outlined), selectedIcon: Icon(Icons.fitness_center), label: 'Gym Saya', tooltip: ''),
+            NavigationDestination(icon: Container(width: 52, height: 52, decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+              child: const Icon(Icons.qr_code_scanner, color: AppColors.darkBackground, size: 24)), label: '', tooltip: ''),
+            const NavigationDestination(icon: Icon(Icons.history_outlined), selectedIcon: Icon(Icons.history), label: 'Riwayat', tooltip: ''),
+            const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profil', tooltip: ''),
+          ]),
+      ));
   }
 }

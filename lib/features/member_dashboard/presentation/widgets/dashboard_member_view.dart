@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymmy/core/theme/app_colors.dart';
@@ -7,6 +8,17 @@ import 'package:intl/intl.dart';
 class DashboardMemberView extends ConsumerWidget {
   final String userName;
   const DashboardMemberView({super.key, required this.userName});
+
+  Future<String> _getGymName(String gymId) async {
+    if (gymId.isEmpty) return 'Gym Tidak Diketahui';
+    try {
+      final doc = await FirebaseFirestore.instance.collection('gym_tenants').doc(gymId).get();
+      if (doc.exists && doc.data() != null) {
+        return doc.data()!['gt_name_title'] as String? ?? 'Gym Tidak Diketahui';
+      }
+    } catch (_) {}
+    return 'Gym Saya';
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,12 +64,23 @@ class DashboardMemberView extends ConsumerWidget {
               Row(children: [
                 Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(
                   color: AppColors.success.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                  child: Text('Membership Aktif', style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w600, fontSize: 12))),
+                  child: const Text('Membership Aktif', style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w600, fontSize: 12))),
                 const Spacer(),
-                Text(membership.memMembershipType, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightSecondaryText)),
+                Text(
+                  membership.memMembershipType == 'monthly' ? 'Bulanan' : (membership.memMembershipType == 'yearly' ? 'Tahunan' : membership.memMembershipType),
+                  style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightSecondaryText),
+                ),
               ]),
               const SizedBox(height: 16),
-              Text('$startStr - $endStr', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              FutureBuilder<String>(
+                future: _getGymName(membership.memGymId),
+                builder: (context, snapshot) {
+                  final name = snapshot.data ?? 'Memuat nama gym...';
+                  return Text(name, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold));
+                },
+              ),
+              const SizedBox(height: 8),
+              Text('Periode: $startStr - $endStr', style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.lightSecondaryText)),
               const SizedBox(height: 12),
               // Progress bar
               ClipRRect(borderRadius: BorderRadius.circular(4),

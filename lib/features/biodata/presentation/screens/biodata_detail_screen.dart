@@ -54,12 +54,22 @@ class _State extends ConsumerState<BiodataDetailScreen> {
     if (uid == null) return;
     setState(() => _saving = true);
     try {
+      // 1. Update user_biodata_profiles
       await FirebaseFirestore.instance.collection('user_biodata_profiles').doc(uid).set({
-        'bio_user_uid': uid, 'bio_full_name': _nameCtrl.text, 'bio_birth_date': Timestamp.fromDate(_birthDate),
+        'bio_user_uid': uid, 'bio_full_name': _nameCtrl.text.trim(), 'bio_birth_date': Timestamp.fromDate(_birthDate),
         'bio_weight': double.tryParse(_weightCtrl.text) ?? 0, 'bio_height': double.tryParse(_heightCtrl.text) ?? 0,
         'bio_daily_activity_frequency': _activity, 'bio_gender': _gender, 'bio_goal_type': _goal,
-        'bio_medical_notes': _notesCtrl.text, 'bio_updated_at': FieldValue.serverTimestamp(),
+        'bio_medical_notes': _notesCtrl.text.trim(), 'bio_updated_at': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
+
+      // 2. Update user_accounts_global name field
+      await FirebaseFirestore.instance.collection('user_accounts_global').doc(uid).update({
+        'user_full_name': _nameCtrl.text.trim(),
+      });
+
+      // 3. Refresh user in AuthProvider to update app session
+      await ref.read(authProvider.notifier).refreshUser();
+
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Biodata berhasil diperbarui')));
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal: $e')));
@@ -126,7 +136,10 @@ class _State extends ConsumerState<BiodataDetailScreen> {
   }
 
   Widget _dropdown(ThemeData theme, String label, String value, Map<String, String> items, ValueChanged<String?> onChanged) {
-    return DropdownButtonFormField<String>(initialValue: value, onChanged: onChanged,
+    return DropdownButtonFormField<String>(
+      key: ValueKey(value),
+      initialValue: value,
+      onChanged: onChanged,
       decoration: InputDecoration(labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),

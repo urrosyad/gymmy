@@ -2,53 +2,78 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymmy/core/theme/app_colors.dart';
-import 'package:gymmy/features/auth/presentation/providers/auth_provider.dart';
+import 'package:gymmy/features/gym_tenant/presentation/providers/gym_tenant_provider.dart';
 import 'package:intl/intl.dart';
 
-class MemberActivityScreen extends ConsumerStatefulWidget {
-  const MemberActivityScreen({super.key});
+class OwnerHistoryScreen extends ConsumerStatefulWidget {
+  const OwnerHistoryScreen({super.key});
   @override
-  ConsumerState<MemberActivityScreen> createState() => _State();
+  ConsumerState<OwnerHistoryScreen> createState() => _State();
 }
 
-class _State extends ConsumerState<MemberActivityScreen> {
+class _State extends ConsumerState<OwnerHistoryScreen> {
   String _tab = 'Semua';
+  final Map<String, String> _nameCache = {};
+
+  Future<String> _getUserDisplay(String uid) async {
+    if (uid.isEmpty) return '-';
+    if (_nameCache.containsKey(uid)) return _nameCache[uid]!;
+    try {
+      final doc = await FirebaseFirestore.instance.collection('user_accounts_global').doc(uid).get();
+      if (doc.exists) {
+        final d = doc.data()!;
+        final name = (d['user_full_name'] ?? '').toString().trim();
+        final email = (d['user_email_address'] ?? '').toString().trim();
+        final display = name.isNotEmpty ? name : (email.isNotEmpty ? email : '${uid.substring(0, uid.length.clamp(0, 8))}...');
+        _nameCache[uid] = display;
+        return display;
+      }
+    } catch (_) {}
+    _nameCache[uid] = uid.length > 8 ? '${uid.substring(0, 8)}...' : uid;
+    return _nameCache[uid]!;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final userId = ref.watch(authProvider).user?.uid ?? '';
+    final gymAsync = ref.watch(ownerGymProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GYMMY', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5)),
-        automaticallyImplyLeading: false,
+        title: const Text('Riwayat Check-in', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Riwayat', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text(
-              'Lihat riwayat aktivitas gym kamu',
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
-            ),
-            const SizedBox(height: 24),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                _chip(context, 'Semua'), const SizedBox(width: 8),
-                _chip(context, 'Check-in'), const SizedBox(width: 8),
-                _chip(context, 'Membership'), const SizedBox(width: 8),
-                _chip(context, 'Kelas'),
+      body: gymAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Gagal memuat: $e')),
+        data: (gym) {
+          if (gym == null) return const Center(child: Text('Data gym tidak ditemukan'));
+          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Riwayat', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Text(
+                  'Semua aktivitas check-in di gym kamu',
+                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+                ),
+                const SizedBox(height: 24),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    _chip(context, 'Semua'), const SizedBox(width: 8),
+                    _chip(context, 'Harian'), const SizedBox(width: 8),
+                    _chip(context, 'Membership'), const SizedBox(width: 8),
+                    _chip(context, 'Kelas'),
+                  ]),
+                ),
+                const SizedBox(height: 16),
               ]),
             ),
-            const SizedBox(height: 16),
-          ]),
-        ),
-        Expanded(child: _buildContent(context, theme, userId)),
-      ]),
+            Expanded(child: _buildList(context, theme, gym.gtIdKey)),
+          ]);
+        },
+      ),
     );
   }
 
@@ -62,28 +87,31 @@ class _State extends ConsumerState<MemberActivityScreen> {
         decoration: BoxDecoration(
           color: sel ? AppColors.primary : Theme.of(ctx).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: sel ? AppColors.primary : Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.15)),
+          border: Border.all(
+            color: sel ? AppColors.primary : Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.15),
+          ),
         ),
-        child: Text(label, style: TextStyle(
-          color: sel ? AppColors.darkBackground : Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.7),
-          fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
-          fontSize: 13,
-        )),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: sel ? AppColors.darkBackground : Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.7),
+            fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
+            fontSize: 13,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildContent(BuildContext ctx, ThemeData theme, String userId) {
-    if (userId.isEmpty) return _empty(theme);
-
+  Widget _buildList(BuildContext ctx, ThemeData theme, String gymId) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-      future: _fetchHistory(userId),
+      future: _fetchHistory(gymId),
       builder: (_, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
         final items = snap.data ?? [];
-        if (items.isEmpty) return _empty(theme);
+        if (items.isEmpty) return _emptyState(theme);
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
           itemCount: items.length,
@@ -94,15 +122,14 @@ class _State extends ConsumerState<MemberActivityScreen> {
     );
   }
 
-  Future<List<Map<String, dynamic>>> _fetchHistory(String userId) async {
+  Future<List<Map<String, dynamic>>> _fetchHistory(String gymId) async {
     final List<Map<String, dynamic>> result = [];
-
     try {
-      // --- Daily check-ins from gym_daily_visits ---
-      if (_tab == 'Semua' || _tab == 'Check-in') {
+      // Daily visits
+      if (_tab == 'Semua' || _tab == 'Harian') {
         final visits = await FirebaseFirestore.instance
             .collection('gym_daily_visits')
-            .where('daily_visit_user_uid', isEqualTo: userId)
+            .where('daily_visit_gym_id', isEqualTo: gymId)
             .orderBy('daily_visit_checkin_at', descending: true)
             .limit(50)
             .get();
@@ -111,44 +138,36 @@ class _State extends ConsumerState<MemberActivityScreen> {
           result.add({
             'type': 'daily',
             'date': d['daily_visit_checkin_at'],
+            'uid': (d['daily_visit_user_uid'] ?? '').toString(),
             'status': (d['daily_visit_status'] ?? 'checked_in').toString(),
-            'gymId': (d['daily_visit_gym_id'] ?? '').toString(),
           });
         }
       }
 
-      // --- Attendance logs for membership and class types ---
+      // Attendance logs
       if (_tab == 'Semua' || _tab == 'Membership' || _tab == 'Kelas') {
-        final logsQuery = FirebaseFirestore.instance
+        final logs = await FirebaseFirestore.instance
             .collection('gym_attendance_logs')
-            .where('log_user_uid', isEqualTo: userId)
+            .where('log_gym_id', isEqualTo: gymId)
             .orderBy('log_recorded_at', descending: true)
-            .limit(50);
-
-        final logs = await logsQuery.get();
+            .limit(50)
+            .get();
         for (final doc in logs.docs) {
           final d = doc.data();
           final cat = (d['log_category_type'] ?? 'other').toString();
-
-          // Skip daily entries already captured above when tab is Semua
           if (_tab == 'Semua' && cat == 'daily') continue;
-
-          // Apply tab filter
           if (_tab == 'Membership' && cat != 'membership') continue;
           if (_tab == 'Kelas' && cat != 'class') continue;
-
           result.add({
             'type': cat,
             'date': d['log_recorded_at'],
+            'uid': (d['log_user_uid'] ?? '').toString(),
             'status': 'logged',
-            'gymId': (d['log_gym_id'] ?? '').toString(),
-            'classId': (d['log_reference_class_id'] ?? '').toString(),
           });
         }
       }
     } catch (_) {}
 
-    // Sort by date descending
     result.sort((a, b) {
       final aTs = a['date'] as Timestamp?;
       final bTs = b['date'] as Timestamp?;
@@ -166,37 +185,32 @@ class _State extends ConsumerState<MemberActivityScreen> {
     final ts = item['date'] as Timestamp?;
     final dateStr = ts != null ? df.format(ts.toDate()) : '-';
     final type = (item['type'] as String?) ?? 'other';
+    final uid = (item['uid'] as String?) ?? '';
 
     IconData icon;
     Color color;
     String label;
-    String? statusStr;
 
     switch (type) {
       case 'daily':
         icon = Icons.how_to_reg;
         color = Colors.green;
         label = 'Check-in Harian';
-        final st = (item['status'] ?? '').toString();
-        statusStr = st == 'checked_in' ? 'Berhasil' : st;
         break;
       case 'membership':
         icon = Icons.card_membership_outlined;
         color = const Color(0xFF7C3AED);
         label = 'Aktivasi Membership';
-        statusStr = null;
         break;
       case 'class':
         icon = Icons.event_note;
         color = Colors.orange;
         label = 'Hadir Kelas';
-        statusStr = null;
         break;
       default:
         icon = Icons.history;
         color = Colors.blue;
         label = 'Aktivitas';
-        statusStr = null;
     }
 
     return Container(
@@ -217,22 +231,23 @@ class _State extends ConsumerState<MemberActivityScreen> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(label, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
             Text(dateStr, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightSecondaryText)),
+            const SizedBox(height: 2),
+            FutureBuilder<String>(
+              future: _getUserDisplay(uid),
+              builder: (context, snap) => Text(
+                snap.data ?? uid,
+                style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ]),
         ),
-        if (statusStr != null)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(statusStr, style: TextStyle(color: Colors.green.shade700, fontSize: 11, fontWeight: FontWeight.w600)),
-          ),
       ]),
     );
   }
 
-  Widget _empty(ThemeData theme) => Center(
+  Widget _emptyState(ThemeData theme) => Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(
             padding: const EdgeInsets.all(24),
@@ -243,7 +258,7 @@ class _State extends ConsumerState<MemberActivityScreen> {
           Text('Belum ada riwayat', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Text(
-            'Riwayat aktivitas gym kamu\nakan muncul di sini.',
+            'Riwayat check-in akan muncul\nsetelah ada member yang scan QR.',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.55)),
           ),

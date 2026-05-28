@@ -88,6 +88,47 @@ class _OwnerScanQrScreenState extends State<OwnerScanQrScreen> {
       'log_device_platform': 'mobile',
     });
 
+    // Update membership registry (checkin count, last checkin, and streak)
+    try {
+      final registryQuery = await fs.collection('gym_members_registry')
+          .where('mem_user_uid', isEqualTo: userId)
+          .where('mem_gym_id', isEqualTo: gymId)
+          .where('mem_membership_status', isEqualTo: 'active')
+          .limit(1)
+          .get();
+
+      if (registryQuery.docs.isNotEmpty) {
+        final regDoc = registryQuery.docs.first;
+        final regData = regDoc.data();
+        final currentCount = (regData['mem_total_checkin_count'] as num?)?.toInt() ?? 0;
+        final lastCheckin = regData['mem_last_checkin_at'] as Timestamp?;
+        int currentStreak = (regData['mem_streak_consecutive_days'] as num?)?.toInt() ?? 0;
+
+        final now = DateTime.now();
+        if (lastCheckin != null) {
+          final lastDate = lastCheckin.toDate();
+          final diffDays = DateTime(now.year, now.month, now.day)
+              .difference(DateTime(lastDate.year, lastDate.month, lastDate.day))
+              .inDays;
+          if (diffDays == 1) {
+            currentStreak += 1;
+          } else if (diffDays > 1) {
+            currentStreak = 1;
+          }
+        } else {
+          currentStreak = 1;
+        }
+
+        await regDoc.reference.update({
+          'mem_total_checkin_count': currentCount + 1,
+          'mem_last_checkin_at': FieldValue.serverTimestamp(),
+          'mem_streak_consecutive_days': currentStreak,
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to update membership check-in counters: $e');
+    }
+
     setState(() { _result = 'Check-in harian berhasil divalidasi!'; _isSuccess = true; _processing = false; });
   }
 

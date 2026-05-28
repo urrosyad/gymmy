@@ -132,17 +132,22 @@ class _DailyQrScreenState extends State<DailyQrScreen> {
                                   offset: const Offset(0, 4)),
                             ],
                           ),
+                          child: Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.all(8),
                           child: QrImageView(
                             data: _buildQrPayload(),
                             version: QrVersions.auto,
                             size: 220,
+                            backgroundColor: Colors.white,
                             eyeStyle: const QrEyeStyle(
                                 eyeShape: QrEyeShape.square,
-                                color: AppColors.darkBackground),
+                                color: Colors.black),
                             dataModuleStyle: const QrDataModuleStyle(
                                 dataModuleShape: QrDataModuleShape.square,
-                                color: AppColors.darkBackground),
+                                color: Colors.black),
                           ),
+                        ),
                         ),
                         const SizedBox(height: 24),
                         Text(widget.gymName,

@@ -66,15 +66,18 @@ class OwnerShellScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(body: navigationShell,
-      bottomNavigationBar: NavigationBar(selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: (i) => _onTap(i, context, ref),
-        destinations: [
-          const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Beranda'),
-          const NavigationDestination(icon: Icon(Icons.folder_open_outlined), selectedIcon: Icon(Icons.folder_open), label: 'Kelola Data'),
-          NavigationDestination(icon: Container(width: 52, height: 52, decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-            child: const Icon(Icons.qr_code_scanner, color: AppColors.darkBackground, size: 24)), label: ''),
-          const NavigationDestination(icon: Icon(Icons.card_membership_outlined), selectedIcon: Icon(Icons.card_membership), label: 'Membership'),
-          const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profil'),
-        ]));
+      bottomNavigationBar: TooltipVisibility(
+        visible: false,
+        child: NavigationBar(selectedIndex: navigationShell.currentIndex,
+          onDestinationSelected: (i) => _onTap(i, context, ref),
+          destinations: [
+            const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Beranda', tooltip: ''),
+            const NavigationDestination(icon: Icon(Icons.folder_open_outlined), selectedIcon: Icon(Icons.folder_open), label: 'Kelola Data', tooltip: ''),
+            NavigationDestination(icon: Container(width: 52, height: 52, decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+              child: const Icon(Icons.qr_code_scanner, color: AppColors.darkBackground, size: 24)), label: '', tooltip: ''),
+            const NavigationDestination(icon: Icon(Icons.card_membership_outlined), selectedIcon: Icon(Icons.card_membership), label: 'Membership', tooltip: ''),
+            const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profil', tooltip: ''),
+          ]),
+      ));
   }
 }
