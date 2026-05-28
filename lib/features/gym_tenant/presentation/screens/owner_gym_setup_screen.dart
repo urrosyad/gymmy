@@ -74,7 +74,7 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         if (!(_formKey4.currentState?.validate() ?? false)) return false;
         if (_facilities.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please add at least one facility')),
+            const SnackBar(content: Text('Tambahkan minimal satu fasilitas')),
           );
           return false;
         }
@@ -137,7 +137,7 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Setup Your Gym'),
+        title: const Text('Pendaftaran Gym'),
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
@@ -180,25 +180,25 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(theme, 'Basic Information', 'Let\'s start with your gym\'s name and description.'),
+            _header(theme, 'Informasi Dasar', 'Mulai dengan nama dan deskripsi gym kamu.'),
             const SizedBox(height: 32),
             GymmyInput(
-              label: 'Gym Name',
-              hintText: 'e.g. Iron Republic Gym',
+              label: 'Nama Gym',
+              hintText: 'cth. Iron Republic Gym',
               controller: _nameCtrl,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 24),
             Text(
-              'Description',
+              'Deskripsi',
               style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _descCtrl,
-              decoration: _deco('Brief description of your gym'),
+              decoration: _deco('Deskripsi singkat tentang gym kamu'),
               maxLines: 4,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
           ],
         ),
@@ -214,25 +214,25 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(theme, 'Location', 'Where is your gym located?'),
+            _header(theme, 'Lokasi', 'Di mana lokasi gym kamu?'),
             const SizedBox(height: 32),
             GymmyInput(
-              label: 'City',
-              hintText: 'e.g. Jakarta',
+              label: 'Kota',
+              hintText: 'cth. Jakarta',
               controller: _cityCtrl,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 24),
             Text(
-              'Full Address / Location',
+              'Alamat Lengkap / Lokasi',
               style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _locationCtrl,
-              decoration: _deco('e.g. Jl. Sudirman No. 10, Jakarta'),
+              decoration: _deco('cth. Jl. Sudirman No. 10, Jakarta'),
               maxLines: 3,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
           ],
         ),
@@ -248,28 +248,28 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(theme, 'Pricing', 'Set your daily and monthly prices.'),
+            _header(theme, 'Harga', 'Tentukan harga harian dan bulanan.'),
             const SizedBox(height: 32),
             GymmyInput(
-              label: 'Daily Pass Price (Rp)',
-              hintText: 'e.g. 50000',
+              label: 'Harga Harian (Rp)',
+              hintText: 'cth. 50000',
               controller: _dailyPriceCtrl,
               keyboardType: TextInputType.number,
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Required';
-                if (double.tryParse(v) == null) return 'Must be a valid number';
+                if (v == null || v.isEmpty) return 'Wajib diisi';
+                if (double.tryParse(v) == null) return 'Harus berupa angka yang valid';
                 return null;
               },
             ),
             const SizedBox(height: 24),
             GymmyInput(
-              label: 'Membership Price (Rp)',
-              hintText: 'e.g. 350000',
+              label: 'Harga Membership (Rp)',
+              hintText: 'cth. 350000',
               controller: _memberPriceCtrl,
               keyboardType: TextInputType.number,
               validator: (v) {
-                if (v == null || v.isEmpty) return 'Required';
-                if (double.tryParse(v) == null) return 'Must be a valid number';
+                if (v == null || v.isEmpty) return 'Wajib diisi';
+                if (double.tryParse(v) == null) return 'Harus berupa angka yang valid';
                 return null;
               },
             ),
@@ -287,17 +287,17 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(theme, 'Facilities & Hours', 'When are you open and what do you offer?'),
+            _header(theme, 'Fasilitas & Jam Operasional', 'Kapan gym buka dan apa yang kamu tawarkan?'),
             const SizedBox(height: 32),
             GymmyInput(
-              label: 'Operational Hours',
-              hintText: 'e.g. 06:00 - 22:00',
+              label: 'Jam Operasional',
+              hintText: 'cth. 06:00 - 22:00',
               controller: _hoursCtrl,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 24),
             Text(
-              'Facilities',
+              'Fasilitas',
               style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
@@ -306,7 +306,7 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _facilityCtrl,
-                    decoration: _deco('e.g. Free Weights, Cardio'),
+                    decoration: _deco('cth. Beban Bebas, Kardio'),
                     onFieldSubmitted: (_) => _addFacility(),
                   ),
                 ),
@@ -350,15 +350,15 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _header(theme, 'Review & Confirm', 'Make sure everything is correct before creating your gym.'),
+          _header(theme, 'Tinjau & Konfirmasi', 'Pastikan semua informasi sudah benar sebelum mendaftarkan gym kamu.'),
           const SizedBox(height: 32),
-          _summaryRow(theme, 'Name', _nameCtrl.text),
-          _summaryRow(theme, 'City', _cityCtrl.text),
-          _summaryRow(theme, 'Daily Price', 'Rp ${_dailyPriceCtrl.text}'),
-          _summaryRow(theme, 'Membership Price', 'Rp ${_memberPriceCtrl.text}'),
-          _summaryRow(theme, 'Hours', _hoursCtrl.text),
+          _summaryRow(theme, 'Nama', _nameCtrl.text),
+          _summaryRow(theme, 'Kota', _cityCtrl.text),
+          _summaryRow(theme, 'Harga Harian', 'Rp ${_dailyPriceCtrl.text}'),
+          _summaryRow(theme, 'Harga Membership', 'Rp ${_memberPriceCtrl.text}'),
+          _summaryRow(theme, 'Jam Operasional', _hoursCtrl.text),
           const SizedBox(height: 16),
-          Text('Facilities', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text('Fasilitas', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text(_facilities.join(', '), style: theme.textTheme.bodyMedium),
         ],
@@ -419,18 +419,18 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
           if (_currentPage > 0)
             TextButton(
               onPressed: state.isLoading ? null : _prevPage,
-              child: const Text('Back'),
+              child: const Text('Kembali'),
             )
           else
             const SizedBox(width: 64),
           if (_currentPage < _totalPages - 1)
             FilledButton(
               onPressed: _nextPage,
-              child: const Text('Next'),
+              child: const Text('Lanjut'),
             )
           else
             GymmyButton(
-              text: 'Create Gym',
+              text: 'Daftarkan Gym',
               isLoading: state.isLoading,
               onPressed: () { _submit(); },
             ),

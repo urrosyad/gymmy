@@ -1,296 +1,477 @@
-# PHASE 2 FINAL POLISH - NAVIGATION AND LANGUAGE CORRECTION
+FINAL PATCH PROMPT - GYMMY FEATURE COMPLETION AND STABILIZATION
+Use existing:
 
-## Objective
+* Clean Architecture
+* Riverpod
+* GoRouter
+* Firebase Auth
+* Firestore
+* existing reusable widgets
+* existing theme system
+* existing owner/member shell
 
-Finalize Phase 2 application shell so the app can proceed safely to the next development phase.
+Read and follow:
 
-Current working features:
-- Auth flow works
-- Member biodata onboarding works
-- Owner wizard works
-- Member shell navigation works
-- Role-based routing works
+* docs/project-brief.md
+* docs/database-schema.md
+* docs/design.md
+* existing codebase
+
+==================================================
+OWNER FEATURE FIXES
+===================
+
+1. FIX EQUIPMENT CRUD FORM
 
 Current issues:
-- Owner role does not have proper bottom navigation
-- Member Explore tab has wrong meaning
-- App title placement is not aligned with desired layout
-- QR Scan / Provide QR action is missing as center navigation action
-- Active navigation style is incorrect
-- App language must be fully Indonesian
 
----
+* Equipment form does not have proper image and video fields.
+* Equipment form has no validation.
+* Empty form can still create data.
 
-# 1. OWNER NAVIGATION SHELL
+Required:
 
-Owner must have bottom navigation menu.
+* Add image field for equipment.
+* Add tutorial video field for equipment.
+* If Firebase Storage is already available, allow image upload.
+* If Firebase Storage is not stable, allow image URL input as fallback.
+* Video can be stored as URL input.
+* Validate all required fields before submit.
+* Do not allow empty equipment data to be saved.
 
-Owner tabs:
-1. Beranda
-2. Kelola Data
-3. Scan
-4. Membership
-5. Profil
+Required equipment fields:
 
-## Owner Tab Details
+* equip_name_label
+* equip_image_storage_url
+* equip_usage_instruction_text
+* equip_tutorial_video_link
+* equip_category_type
+* equip_is_active_status
 
-### Beranda
-Contains:
-- Ringkasan harga daily
-- Ringkasan harga membership
-- Total member
-- Total kelas
-- Total equipment
-- Ringkasan check-in
+Validation:
 
-### Kelola Data
-Contains CRUD entry points for:
-- Data harga daily dan membership
-- Data benefit rank
-- Data kelas
-- Data equipment gym
+* equipment name required
+* usage instruction required
+* category required
+* image URL or uploaded image required
+* tutorial video URL optional but must be valid URL if filled
 
-### Scan
-This is a special center circular action.
+Show inline validation errors in Indonesian.
 
-When tapped, show options:
-- Scan QR User
-- Tampilkan QR Membership Gym
+2. FIX CLASS CRUD FORM
 
-### Membership
-Contains:
-- List user membership
-- Detail aktivitas member
-- Rank member
-- Kelas yang diambil
-- Riwayat check-in membership
+Current issues:
 
-### Profil
-Contains:
-- Profil owner
-- Profil gym
-- Edit data gym
-- Logout
+* Personal trainer checkbox was removed.
+* Class form has no validation.
+* Empty form can still create data.
 
----
+Required:
 
-# 2. MEMBER NAVIGATION SHELL
+* Restore personal trainer checkbox.
+* Validate all required class fields.
+* Do not save empty class data.
 
-Member tabs:
-1. Beranda
-2. Gym Saya
-3. Scan
-4. Riwayat
-5. Profil
+Required class fields:
 
-## Important Correction
+* class_title_name
+* class_pricing_amount
+* class_schedule_text
+* class_session_count
+* class_is_personal_trainer
+* class_description_text
+* class_max_capacity
+* class_is_active
 
-The previous "Explore" tab is incorrect.
+Validation:
 
-For active membership users:
-- Gym Saya must contain class and equipment available in the gym they subscribe to.
+* class title required
+* price required and must be number greater than 0
+* schedule required
+* session count required and must be greater than 0
+* description required
+* capacity required and must be greater than 0
 
-For non-membership users:
-- Beranda shows gym discovery.
-- Gym Saya should show locked/empty state:
-  "Ayo gabung sebagai member gym terlebih dahulu."
+Show inline validation errors in Indonesian.
 
-## Member Tab Details
+3. FIX RANK BENEFIT CRUD FORM
 
-### Beranda
-If no active membership:
-- Gym discovery
-- Search gym
-- Recommended gym cards
+Current issues:
 
-If active membership:
-- Active gym home
-- Membership progress
-- Points
-- Rank
-- Latest activity
+* Rank benefit form has no validation.
+* Empty form can still create data.
+* Priority order input was removed.
 
-### Gym Saya
-If active membership:
-- Daftar alat gym
-- Daftar kelas gym
-- Detail class
-- Equipment education
+Required:
 
-If no active membership:
-- Locked state
+* Restore priority order input.
+* Validate all required rank fields.
+* Do not save empty rank data.
 
-### Scan
-Center circular action.
+Required rank fields:
 
-For member:
-- Show QR Daily Access if user is in daily access flow
-- Show QR Class Subscription if user is registering to class
-- Show QR Class Attendance if user has active class
-- Open QR scanner when scanning owner membership QR
+* rank_title_name
+* rank_min_points_threshold
+* rank_benefit_description_list
+* rank_priority_order
+* rank_is_active
 
-### Riwayat
-Contains:
-- Daily check-in history
-- Membership check-in history
-- Class attendance history
+Validation:
 
-### Profil
-Contains:
-- User profile
-- Biodata
-- Theme setting
-- Logout
+* rank title required
+* minimum points required and must be number >= 0
+* benefit list required
+* priority order required and must be number >= 1
 
----
+Show inline validation errors in Indonesian.
 
-# 3. CENTER QR NAVIGATION ACTION
+4. FIX OWNER PROFILE AND GYM IMAGE
 
-Both owner and member navigation must have a center circular QR action.
+Current issue:
 
-Visual style:
-- Circular button
-- Positioned in center of bottom navigation
-- Primary color: #C0FE39
-- Icon only
-- No text label required inside the circle
-- Use clean Material 3 style
-- Do not use emoji
-- Do not use oversized shadows
-- Do not use excessive gradients
+* Owner profile cannot set gym image.
+* Member discovery needs gym image from gym_tenants.
 
-Behavior:
-- Owner center action opens bottom sheet with:
-  1. Scan QR User
-  2. Tampilkan QR Membership Gym
+Required:
 
-- Member center action opens bottom sheet with:
-  1. Scan QR Membership Gym
-  2. Tampilkan QR Daily Check-in
-  3. Tampilkan QR Kelas
+* Add edit gym profile feature in owner profile.
+* Allow owner to input or upload gym image.
+* Store image in:
+  gt_image
+* Also allow editing:
+  gt_name_title
+  gt_location
+  gt_description_text
+  gt_city_name
+  gt_daily_price_amount
+  gt_membership_price_amount
+  gt_available_facilities
+  gt_operational_hours
+  gt_is_active
 
-If feature is not ready yet, use clean placeholder page or modal.
-Do not implement full QR engine yet.
+If Storage is unstable, use image URL input as fallback.
 
----
+5. FIX OWNER DASHBOARD DATA CONNECTION
 
-# 4. ACTIVE NAVIGATION STYLE
+Current issue:
 
-Active navigation item must NOT use pill background.
+* Daily price and membership price show 0 even when data exists in gym_tenants.
+* Check-in data is not connected.
 
-Expected active state:
-- only icon color changes to primary #C0FE39
-- label may stay neutral or primary, but no filled active container
-- no big highlighted bubble except center QR button
-- inactive icons use neutral gray
+Required:
 
-Avoid:
-- active indicator background
-- capsule/pill behind selected item
-- colorful navigation bar
-- emoji icons
+* Owner dashboard must read real Firestore data from owner's gym_tenants document.
+* Show real:
+  gt_daily_price_amount
+  gt_membership_price_amount
+  total active members from gym_members_registry
+  total daily visits from gym_daily_visits
+  total check-ins today from gym_attendance_logs
+  total classes from gym_classes_catalog
+  total equipment from gym_equipments
 
----
+Handle missing fields safely.
+Do not crash if old Firestore documents do not contain new fields.
+Use fallback 0 or empty state.
 
-# 5. APP TITLE PLACEMENT
+==================================================
+QR FIXES
+========
 
-Do not center the app title.
+6. FIX QR VISIBILITY IN DARK MODE
 
-App title "GYMMY" must be placed:
-- top left
-- aligned with screen horizontal padding
-- clean and professional
+Current issue:
 
-Avoid:
-- centered app title
-- oversized title
-- decorative title
+* QR is not visible in dark mode.
 
----
+Required:
 
-# 6. LANGUAGE LOCALIZATION
+* QR must always be readable.
+* In light mode:
+  QR foreground should be dark.
+  QR background should be white.
+* In dark mode:
+  QR foreground must be white or very light.
+  QR background must use dark contrast or a white QR container.
+* Best approach:
+  Wrap QR in a high-contrast container.
+  Ensure scanner can read it.
+* Do not let QR blend into background.
 
-Convert all visible text in the application to Indonesian.
+Apply this to:
+
+* daily QR
+* membership QR
+* class QR if already exists
+
+==================================================
+MEMBERSHIP AND HISTORY FIXES
+============================
+
+7. FIX MEMBERSHIP PAGE ERROR
+
+Current issue:
+
+* Membership page errors after a user becomes a member.
+
+Required:
+
+* Fix membership page runtime error.
+* Read membership data from gym_members_registry safely.
+* Join with user_accounts_global only if needed and safely.
+* If user data is missing, show fallback text.
+* Do not crash on null fields.
+
+Membership page must show:
+
+* all members
+* active members
+* inactive members
+* user name or email
+* membership status
+* start date
+* end date
+* points
+* streak
+* total check-in
+
+Tabs:
+
+* Semua
+* Aktif
+* Tidak Aktif
+
+8. ADD CHECK-IN AND HISTORY TRACKING PAGE
+
+Current issue:
+
+* There is no proper tracking page for daily/member/non-member check-ins.
+
+Required:
+Create or complete history/tracking pages for owner and member.
+
+Owner history page:
+
+* Show all check-in records for owner gym.
+* Data sources:
+  gym_attendance_logs
+  gym_daily_visits
+* Filter tabs:
+  Semua
+  Harian
+  Membership
+  Kelas
+* Show:
+  user name/email if available
+  category
+  time
+  gym
+  validator
+  status
+
+Member history page:
+
+* Show current user's activity history.
+* Data sources:
+  gym_attendance_logs
+  gym_daily_visits
+  gym_class_subscriptions
+* Filter tabs:
+  Semua
+  Harian
+  Membership
+  Kelas
+
+If no data:
+show Indonesian empty state.
+
+9. CONNECT CHECK-IN DATA TO DASHBOARD
+
+Current issue:
+
+* Check-in data on dashboard is not connected.
+
+Required:
+
+* Owner dashboard must show check-in summary from Firestore.
+* Member active dashboard must show latest check-in and total check-in.
+* Update data after successful QR scan.
+* Refresh providers after scan success.
+
+For daily QR scan:
+
+* create gym_daily_visits
+* create gym_attendance_logs
+* update dashboard counters
+
+For membership check-in if implemented:
+
+* create gym_attendance_logs
+* update mem_total_checkin_count
+* update mem_last_checkin_at
+* update mem_streak_consecutive_days if applicable
+
+==================================================
+FORM VALIDATION STANDARD
+========================
+
+Apply this validation standard to all create/update forms:
+
+* Do not submit empty required fields.
+* Show inline error message below field.
+* Disable submit button or stop submit when invalid.
+* Use Indonesian validation text.
+* Keep user input after validation fails.
+* Do not navigate away on validation failure.
+* Do not show fullscreen error page.
+
+Indonesian validation examples:
+
+* "Nama wajib diisi"
+* "Harga wajib diisi"
+* "Harga harus lebih dari 0"
+* "Jadwal wajib diisi"
+* "Deskripsi wajib diisi"
+* "URL tidak valid"
+* "Data berhasil disimpan"
+* "Gagal menyimpan data"
+
+==================================================
+UI LANGUAGE REQUIREMENT
+=======================
+
+Convert all remaining visible UI text to Indonesian.
 
 Examples:
-- Home → Beranda
-- Explore → Gym Saya
-- Activity → Riwayat
-- Profile → Profil
-- Settings → Pengaturan
-- Logout → Keluar
-- Search gym → Cari gym
-- Complete biodata → Lengkapi biodata
-- Submit → Simpan
-- Next → Lanjut
-- Back → Kembali
-- Owner Dashboard → Beranda Owner
-- Manage Data → Kelola Data
-- Membership → Membership
-- Scan QR → Scan QR
-- Gym Setup → Pendaftaran Gym
-- Daily Price → Harga Harian
-- Membership Price → Harga Membership
 
-All buttons, labels, empty states, validation messages, dashboard titles, and navigation labels must use Indonesian.
+* Add Equipment -> Tambah Peralatan
+* Save -> Simpan
+* Cancel -> Batal
+* Edit -> Ubah
+* Delete -> Hapus
+* Equipment -> Peralatan
+* Class -> Kelas
+* Rank Benefit -> Benefit Rank
+* Daily Price -> Harga Harian
+* Membership Price -> Harga Membership
+* Check-in History -> Riwayat Check-in
+* No data available -> Belum ada data
+* Coming soon -> remove this, replace with working screen
 
----
+Do not use emoji.
 
-# 7. ARCHITECTURE RULES
+==================================================
+DATA NORMALIZATION AND SAFETY
+=============================
 
-Do NOT:
-- rewrite authentication
-- rewrite biodata onboarding
-- rewrite owner wizard logic
-- replace existing router entirely
-- regenerate project structure
+Firestore is schemaless. Existing documents may be missing new fields.
 
-Only:
-- add owner navigation shell
-- refine member navigation shell
-- add center QR action placeholder
-- update active navigation style
-- adjust title alignment
-- convert text to Indonesian
+Implement safe reading:
 
-Preserve:
-- Clean Architecture
-- Riverpod
-- GoRouter
-- StatefulShellRoute if already used
-- dependency injection
-- current working flow
+* never assume fields exist
+* use null-safe parsing
+* provide fallback values
+* avoid runtime cast errors
 
----
+When owner updates profile/pricing, write missing gym_tenants fields:
 
-# 8. FINAL EXPECTED FLOW
+* gt_image
+* gt_description_text
+* gt_city_name
+* gt_operational_hours
+* gt_gallery_images
+* gt_daily_price_amount
+* gt_membership_price_amount
+* gt_available_facilities
+* gt_is_active
 
-## Member without biodata
-Login → Form Biodata
+When creating new documents, include all required schema fields.
 
-## Member with biodata but no membership
-Login → Beranda with Gym Discovery
+==================================================
+TECHNICAL REQUIREMENTS
+======================
 
-## Member with active membership
-Login → Beranda Membership Aktif
+Maintain:
 
-## Owner without gym setup
-Login → Wizard Pendaftaran Gym
+* existing Clean Architecture
+* existing Riverpod providers where possible
+* existing GoRouter routes
+* existing Firebase initialization
+* existing reusable widgets
+* current working auth and role flow
 
-## Owner with gym setup
-Login → Owner Shell Navigation
+Fix:
 
----
+* invalid forms
+* broken membership page
+* disconnected dashboard data
+* inaccessible CRUD screens
+* QR dark mode visibility
+* history tracking
+* old missing-field crashes
 
-# Definition of Done
+Avoid:
 
-The app must:
-- pass flutter analyze
-- run without runtime assertion
-- keep existing auth working
-- keep biodata flow working
-- keep owner wizard working
-- show bottom navigation for owner and member
-- have center circular QR action
-- use Indonesian language across visible UI
-- use primary color only for active icons and center QR action
+* full project rewrite
+* duplicate models
+* duplicate repositories
+* dead code
+* unused imports
+* hardcoded demo-only data
+* English UI text
+
+==================================================
+IMPLEMENTATION PRIORITY
+=======================
+
+Priority 1:
+
+* Fix validation for equipment, class, rank
+* Fix owner dashboard Firestore data
+* Fix membership page error
+* Fix profile gym image
+* Fix QR dark mode visibility
+* Remove "Segera datang" from listed menus
+
+Priority 2:
+
+* Complete check-in/history tracking
+* Connect check-in data to dashboard
+* Stabilize QR scan success flow
+
+Priority 3:
+
+* Polish UI consistency
+* Clean all remaining English text
+* Remove unused imports and lints
+
+==================================================
+FINAL ACCEPTANCE CRITERIA
+=========================
+
+The final app must:
+
+* pass flutter analyze
+* run without red screen
+* keep auth working
+* keep logout working
+* keep member biodata flow working
+* keep owner wizard working
+* equipment form has validation
+* class form has validation
+* rank form has validation
+* owner profile can set gym image
+* member discovery shows gym image
+* QR is visible in dark mode
+* membership page does not crash
+* history/check-in page works
+* owner dashboard reads real Firestore prices and check-in data
+* all visible UI text is Indonesian
+* no menu from the listed issues shows only "Segera datang"
+
+After implementation:
+
+1. Run flutter analyze.
+2. Fix all errors and warnings.
+3. Ensure the app runs successfully.
+4. Do not stop until the app is stable.

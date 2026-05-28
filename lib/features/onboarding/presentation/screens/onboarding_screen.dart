@@ -74,7 +74,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: TextButton(
                 onPressed: _finishOnboarding,
                 child: Text(
-                  'Skip',
+                  'Lewati',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     fontWeight: FontWeight.w600,
@@ -160,8 +160,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     width: double.infinity,
                     child: GymmyButton(
                       text: _currentPage == _pages.length - 1
-                          ? 'Get Started'
-                          : 'Next',
+                          ? 'Mulai'
+                          : 'Lanjut',
                       onPressed: _nextPage,
                     ),
                   ),

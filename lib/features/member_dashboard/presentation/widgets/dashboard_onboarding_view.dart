@@ -17,7 +17,7 @@ class DashboardOnboardingView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Welcome, $userName',
+            'Selamat datang, $userName',
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: theme.colorScheme.onSurface,
@@ -25,23 +25,22 @@ class DashboardOnboardingView extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Start your fitness journey today.',
+            'Mulai perjalanan fitness kamu hari ini.',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 48),
 
-          // Discover Gym CTA
+          // Temukan Gym CTA
           _buildActionCard(
             context: context,
-            title: 'Find a Gym',
-            description: 'Discover premium fitness centers near you.',
+            title: 'Cari Gym',
+            description: 'Temukan pusat kebugaran terbaik di sekitar kamu.',
             icon: Icons.search_rounded,
             onTap: () {
-              // Placeholder for Gym Discovery
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Gym Discovery coming soon!')),
+                const SnackBar(content: Text('Fitur Cari Gym segera hadir!')),
               );
             },
             isPrimary: false,
@@ -52,8 +51,8 @@ class DashboardOnboardingView extends ConsumerWidget {
           // Membership CTA
           _buildActionCard(
             context: context,
-            title: 'Join Membership',
-            description: 'Unlock unlimited access and track your progress.',
+            title: 'Bergabung Membership',
+            description: 'Akses tak terbatas dan pantau progress kamu.',
             icon: Icons.card_membership_rounded,
             onTap: () {
               ref.read(membershipProvider.notifier).joinMembership();
@@ -63,11 +62,11 @@ class DashboardOnboardingView extends ConsumerWidget {
 
           const SizedBox(height: 24),
 
-          // Daily Pass CTA
+          // Akses Harian CTA
           _buildActionCard(
             context: context,
-            title: 'Daily Access',
-            description: 'Drop-in for a quick session without commitment.',
+            title: 'Akses Harian',
+            description: 'Sesi harian tanpa komitmen jangka panjang.',
             icon: Icons.timer_outlined,
             onTap: () {
               ref.read(membershipProvider.notifier).buyDailyPass();
