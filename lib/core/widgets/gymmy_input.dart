@@ -40,14 +40,28 @@ class _GymmyInputState extends State<GymmyInput> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final borderColor = isDark
+        ? theme.colorScheme.outline
+        : theme.colorScheme.onSurface.withValues(alpha: 0.1);
+    final hintColor = isDark
+        ? const Color(0xFF737B88)
+        : theme.colorScheme.onSurface.withValues(alpha: 0.5);
+    final labelColor = isDark
+        ? const Color(0xFFA5ACB8)
+        : theme.colorScheme.onSurface.withValues(alpha: 0.8);
 
     Widget? buildSuffixIcon() {
       if (widget.isPassword) {
         return IconButton(
           icon: Icon(
-            _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            _obscureText
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
             size: 20,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            color: isDark
+                ? const Color(0xFFA5ACB8)
+                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),
           onPressed: () {
             setState(() {
@@ -64,9 +78,7 @@ class _GymmyInputState extends State<GymmyInput> {
       children: [
         Text(
           widget.label,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-          ),
+          style: theme.textTheme.labelLarge?.copyWith(color: labelColor),
         ),
         const SizedBox(height: 8),
         TextFormField(
@@ -77,12 +89,12 @@ class _GymmyInputState extends State<GymmyInput> {
           style: theme.textTheme.bodyLarge,
           decoration: InputDecoration(
             hintText: widget.hintText,
-            hintStyle: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-            ),
+            hintStyle: theme.textTheme.bodyLarge?.copyWith(color: hintColor),
             errorText: widget.errorText,
             filled: true,
-            fillColor: theme.colorScheme.surface,
+            fillColor: isDark
+                ? const Color(0xFF1E2228)
+                : theme.colorScheme.surface,
             prefixIcon: widget.prefixIcon,
             suffixIcon: buildSuffixIcon(),
             contentPadding: const EdgeInsets.symmetric(
@@ -91,27 +103,28 @@ class _GymmyInputState extends State<GymmyInput> {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
-              ),
+              borderSide: BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
-              ),
+              borderSide: BorderSide(color: borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color: theme.colorScheme.primary,
-                width: 2,
+                width: isDark ? 1.5 : 2,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: theme.colorScheme.error),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color: theme.colorScheme.error,
+                width: isDark ? 1.5 : 2,
               ),
             ),
           ),

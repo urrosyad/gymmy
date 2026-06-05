@@ -128,13 +128,17 @@ class QrSessionRepository {
   Future<int> getTodayCheckinCount(String gymId) async {
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
     final query = await _firestore
         .collection('gym_daily_visits')
         .where('daily_visit_gym_id', isEqualTo: gymId)
-        .where('daily_visit_checkin_at',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
         .get();
-    return query.docs.length;
+    return query.docs.where((doc) {
+      final ts = doc.data()['daily_visit_checkin_at'];
+      if (ts is! Timestamp) return false;
+      final date = ts.toDate();
+      return !date.isBefore(startOfDay) && date.isBefore(endOfDay);
+    }).length;
   }
 
   /// Gets total member count for a gym.
@@ -178,10 +182,11 @@ class QrSessionRepository {
     final query = await _firestore
         .collection('gym_daily_visits')
         .where('daily_visit_user_uid', isEqualTo: userId)
-        .orderBy('daily_visit_checkin_at', descending: true)
         .limit(50)
         .get();
-    return query.docs.map((d) => d.data()).toList();
+    final result = query.docs.map((d) => d.data()).toList();
+    result.sort((a, b) => _compareTimestampDesc(a['daily_visit_checkin_at'], b['daily_visit_checkin_at']));
+    return result;
   }
 
   /// Gets attendance logs for a user.
@@ -190,10 +195,11 @@ class QrSessionRepository {
     final query = await _firestore
         .collection('gym_attendance_logs')
         .where('log_user_uid', isEqualTo: userId)
-        .orderBy('log_recorded_at', descending: true)
         .limit(50)
         .get();
-    return query.docs.map((d) => d.data()).toList();
+    final result = query.docs.map((d) => d.data()).toList();
+    result.sort((a, b) => _compareTimestampDesc(a['log_recorded_at'], b['log_recorded_at']));
+    return result;
   }
 
   /// Gets class subscriptions for a user.
@@ -201,10 +207,20 @@ class QrSessionRepository {
       String userId) async {
     final query = await _firestore
         .collection('gym_class_subscriptions')
-        .where('sub_user_uid', isEqualTo: userId)
-        .orderBy('sub_started_at', descending: true)
+        .where('class_sub_user_uid', isEqualTo: userId)
         .limit(50)
         .get();
-    return query.docs.map((d) => d.data()).toList();
+    final result = query.docs.map((d) => d.data()).toList();
+    result.sort((a, b) => _compareTimestampDesc(a['class_sub_created_at'], b['class_sub_created_at']));
+    return result;
+  }
+
+  int _compareTimestampDesc(dynamic a, dynamic b) {
+    final aTs = a is Timestamp ? a : null;
+    final bTs = b is Timestamp ? b : null;
+    if (aTs == null && bTs == null) return 0;
+    if (aTs == null) return 1;
+    if (bTs == null) return -1;
+    return bTs.compareTo(aTs);
   }
 }

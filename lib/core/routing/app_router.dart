@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -42,6 +44,10 @@ GoRouter createRouter(WidgetRef ref) {
       final hasSeenOnboarding = ref.read(onboardingProvider);
       final flow = ref.read(userFlowProvider);
       final location = routerState.uri.toString();
+
+      if (!notifier.splashDone) {
+        return location == '/' ? null : '/';
+      }
 
       // --- Auth checking ---
       final isChecking = authState.status == AuthStatus.initial ||
@@ -265,7 +271,13 @@ String _destinationPath(AppDestination dest) {
 }
 
 class _AppStateNotifier extends ChangeNotifier {
+  bool splashDone = false;
+
   _AppStateNotifier(WidgetRef ref) {
+    Timer(const Duration(seconds: 3), () {
+      splashDone = true;
+      notifyListeners();
+    });
     ref.listen<AuthState>(authProvider, (previous, next) => notifyListeners());
     ref.listen<bool>(onboardingProvider, (previous, next) => notifyListeners());
     ref.listen<AppDestination>(userFlowProvider, (previous, next) => notifyListeners());

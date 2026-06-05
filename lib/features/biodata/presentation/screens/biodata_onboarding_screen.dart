@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymmy/core/widgets/gymmy_app_bar_logo.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -59,7 +60,9 @@ class _BiodataOnboardingScreenState
     final user = ref.read(authProvider).user;
     if (user == null) return;
 
-    await ref.read(biodataProvider.notifier).submit(
+    await ref
+        .read(biodataProvider.notifier)
+        .submit(
           user: user,
           fullName: _fullNameCtrl.text.trim(),
           birthDate: _birthDate!,
@@ -91,7 +94,7 @@ class _BiodataOnboardingScreenState
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Complete Your Profile'),
+        title: const GymmyAppBarLogo(),
         automaticallyImplyLeading: false,
       ),
       body: Form(
@@ -133,7 +136,9 @@ class _BiodataOnboardingScreenState
               onTap: _pickBirthDate,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   border: Border.all(
@@ -143,10 +148,11 @@ class _BiodataOnboardingScreenState
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.calendar_today_outlined,
-                        size: 18,
-                        color: theme.colorScheme.onSurface
-                            .withValues(alpha: 0.5)),
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 18,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       _birthDate == null
@@ -190,7 +196,8 @@ class _BiodataOnboardingScreenState
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,1}')),
+                            RegExp(r'^\d+\.?\d{0,1}'),
+                          ),
                         ],
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Required';
@@ -215,7 +222,8 @@ class _BiodataOnboardingScreenState
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,1}')),
+                            RegExp(r'^\d+\.?\d{0,1}'),
+                          ),
                         ],
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Required';
@@ -296,34 +304,31 @@ class _BiodataOnboardingScreenState
   }
 
   InputDecoration _inputDecoration(String hint) => InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surface,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.secondary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.error),
-        ),
-      );
+    hintText: hint,
+    filled: true,
+    fillColor: Theme.of(context).colorScheme.surface,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: AppColors.secondary, width: 1.5),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: AppColors.error),
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -335,12 +340,12 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-      );
+    text,
+    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+      fontWeight: FontWeight.w600,
+      color: Theme.of(context).colorScheme.onSurface,
+    ),
+  );
 }
 
 class _SegmentedRow extends StatelessWidget {

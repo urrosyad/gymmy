@@ -71,12 +71,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   const SizedBox(height: 48),
 
                   // Brand
-                  Text(
-                    'GYMMY',
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset(
+                      'assets/logos/gymmy_font.png',
+                      width: 180,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => Text(
+                        'GYMMY',
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -299,4 +307,3 @@ class _Tab extends StatelessWidget {
     );
   }
 }
-

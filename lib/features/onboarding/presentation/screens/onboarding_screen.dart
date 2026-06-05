@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymmy/core/providers/onboarding_provider.dart';
 import 'package:gymmy/core/routing/route_names.dart';
-import 'package:gymmy/core/widgets/gymmy_button.dart';
+import 'package:gymmy/core/theme/app_colors.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -16,24 +16,31 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<_OnboardingPageData> _pages = [
+  static const List<_OnboardingPageData> _pages = [
     _OnboardingPageData(
-      icon: Icons.business,
-      title: 'Manajemen Gym Terpusat',
+      assetPath: 'assets/logos/gym_onboarding.png',
+      accentIcon: Icons.bolt_rounded,
+      imageScale: 0.9,
+      titleLineOne: 'Semua Aktivitas Gym',
+      titleLineTwo: 'dalam Satu Aplikasi',
       description:
-          'Kelola alat, kelas, dan member gym Anda dengan mudah dalam satu platform.',
+          'Temukan gym, kelola membership, dan akses fasilitas dengan lebih praktis.',
     ),
     _OnboardingPageData(
-      icon: Icons.qr_code,
-      title: 'Check-in Cepat via QR',
+      assetPath: 'assets/logos/qr_onboarding.png',
+      accentIcon: Icons.qr_code_2_rounded,
+      titleLineOne: 'Check-in Lebih Cepat',
+      titleLineTwo: 'dengan QR',
       description:
-          'Akses fasilitas gym dengan mudah menggunakan QR code digital Anda.',
+          'Gunakan QR untuk akses harian, membership, dan aktivitas gym dengan lebih praktis.',
     ),
     _OnboardingPageData(
-      icon: Icons.emoji_events,
-      title: 'Gamifikasi & Loyalitas',
+      assetPath: 'assets/logos/rank_onboarding.png',
+      accentIcon: Icons.star_rounded,
+      titleLineOne: 'Bangun Konsistensi',
+      titleLineTwo: 'dan Raih Progress',
       description:
-          'Kumpulkan poin, jaga streak harian, dan naikkan rank untuk dapatkan benefit menarik!',
+          'Pantau aktivitas, kumpulkan poin, dan tingkatkan rank dari setiap kunjungan.',
     ),
   ];
 
@@ -49,9 +56,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-    } else {
-      _finishOnboarding();
+      return;
     }
+    _finishOnboarding();
   }
 
   void _finishOnboarding() {
@@ -64,105 +71,68 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: const Color(0xFFFCFDF9),
       body: SafeArea(
         child: Column(
           children: [
-            // Skip Button
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: _finishOnboarding,
-                child: Text(
-                  'Lewati',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    fontWeight: FontWeight.w600,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: _finishOnboarding,
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.lightSecondaryText,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
+                    textStyle: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
+                  child: const Text('Lewati'),
                 ),
               ),
             ),
-            
-            // Page View
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
+                onPageChanged: (index) => setState(() => _currentPage = index),
                 itemCount: _pages.length,
                 itemBuilder: (context, index) {
-                  final page = _pages[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          page.icon,
-                          size: 120,
-                          color: theme.colorScheme.primary,
-                        ),
-                        const SizedBox(height: 48),
-                        Text(
-                          page.title,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: theme.colorScheme.onSurface,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          page.description,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                            height: 1.5,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
+                  return _OnboardingPage(page: _pages[index]);
                 },
               ),
             ),
-            
-            // Bottom Controls
             Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
               child: Column(
                 children: [
-                  // Dot indicators
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _pages.length,
-                      (index) => AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        height: 8,
-                        width: _currentPage == index ? 24 : 8,
-                        decoration: BoxDecoration(
-                          color: _currentPage == index
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.primary.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
+                  _PageIndicator(
+                    length: _pages.length,
+                    currentIndex: _currentPage,
                   ),
-                  const SizedBox(height: 32),
-                  // Next/Finish Button
+                  const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
-                    child: GymmyButton(
-                      text: _currentPage == _pages.length - 1
-                          ? 'Mulai'
-                          : 'Lanjut',
+                    child: FilledButton(
                       onPressed: _nextPage,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.lightPrimaryText,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        textStyle: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      child: Text(
+                        _currentPage == _pages.length - 1 ? 'Mulai' : 'Lanjut',
+                      ),
                     ),
                   ),
                 ],
@@ -175,14 +145,171 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-class _OnboardingPageData {
+class _OnboardingPage extends StatelessWidget {
+  final _OnboardingPageData page;
+
+  const _OnboardingPage({required this.page});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxHeight < 520;
+        final titleStyle = theme.textTheme.headlineSmall?.copyWith(
+          color: AppColors.lightPrimaryText,
+          fontSize: compact ? 23 : 25,
+          fontWeight: FontWeight.w900,
+          height: 1.16,
+        );
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Expanded(
+                flex: compact ? 7 : 8,
+                child: Center(
+                  child: OverflowBox(
+                    maxWidth: constraints.maxWidth * 1.22,
+                    maxHeight: constraints.maxHeight * (compact ? 0.62 : 0.68),
+                    child: Transform.scale(
+                      scale: page.imageScale,
+                      child: Image.asset(
+                        page.assetPath,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: compact ? 16 : 22),
+              _HexagonAccentIcon(icon: page.accentIcon),
+              SizedBox(height: compact ? 18 : 26),
+              Text(
+                '${page.titleLineOne}\n${page.titleLineTwo}',
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: titleStyle,
+              ),
+              SizedBox(height: compact ? 12 : 16),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 330),
+                child: Text(
+                  page.description,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.lightSecondaryText,
+                    height: 1.45,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const Spacer(flex: 2),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HexagonAccentIcon extends StatelessWidget {
   final IconData icon;
-  final String title;
+
+  const _HexagonAccentIcon({required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _HexagonOutlinePainter(),
+      child: SizedBox(
+        width: 38,
+        height: 42,
+        child: Center(
+          child: Icon(icon, color: AppColors.lightPrimaryText, size: 18),
+        ),
+      ),
+    );
+  }
+}
+
+class _HexagonOutlinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(size.width * 0.5, 1)
+      ..lineTo(size.width - 2, size.height * 0.25)
+      ..lineTo(size.width - 2, size.height * 0.75)
+      ..lineTo(size.width * 0.5, size.height - 1)
+      ..lineTo(2, size.height * 0.75)
+      ..lineTo(2, size.height * 0.25)
+      ..close();
+
+    final paint = Paint()
+      ..color = AppColors.primary
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeJoin = StrokeJoin.round;
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _PageIndicator extends StatelessWidget {
+  final int length;
+  final int currentIndex;
+
+  const _PageIndicator({required this.length, required this.currentIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(length, (index) {
+        final active = index == currentIndex;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          width: active ? 28 : 8,
+          height: 8,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            color: active
+                ? AppColors.primary
+                : AppColors.primary.withValues(alpha: 0.26),
+            borderRadius: BorderRadius.circular(99),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _OnboardingPageData {
+  final String assetPath;
+  final IconData accentIcon;
+  final double imageScale;
+  final String titleLineOne;
+  final String titleLineTwo;
   final String description;
 
-  _OnboardingPageData({
-    required this.icon,
-    required this.title,
+  const _OnboardingPageData({
+    required this.assetPath,
+    required this.accentIcon,
+    this.imageScale = 1,
+    required this.titleLineOne,
+    required this.titleLineTwo,
     required this.description,
   });
 }

@@ -13,20 +13,25 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.fitness_center_rounded,
-              size: 80,
-              color: theme.colorScheme.primary,
+            Image.asset(
+              'assets/logos/gymmy_logo.png',
+              width: 144,
+              height: 144,
+              fit: BoxFit.contain,
             ),
-            const SizedBox(height: 16),
-            Text(
-              'GYMMY',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-                letterSpacing: 4,
+            const SizedBox(height: 14),
+            Image.asset(  
+              'assets/logos/gymmy_font.png',
+              width: 180,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Text(
+                'GYMMY',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                  letterSpacing: 4,
+                ),
               ),
             ),
             const SizedBox(height: 24),

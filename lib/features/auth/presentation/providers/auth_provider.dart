@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:gymmy/core/providers/theme_provider.dart';
 import 'package:gymmy/core/di/injection.dart';
 import 'package:gymmy/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:gymmy/features/auth/domain/usecases/login_usecase.dart';
@@ -105,22 +107,41 @@ class AuthNotifier extends Notifier<AuthState> {
   // ---------------------------------------------------------------------------
   void _handleError(Object error) {
     String msg = error.toString();
-    
+
     // We try to extract Firebase exception codes from the message
     // Usually it looks like [firebase_auth/wrong-password] ...
-    
+
     if (msg.contains('invalid-email')) {
-      state = state.copyWith(status: AuthStatus.error, emailError: 'Invalid email address');
+      state = state.copyWith(
+        status: AuthStatus.error,
+        emailError: 'Invalid email address',
+      );
     } else if (msg.contains('user-not-found')) {
-      state = state.copyWith(status: AuthStatus.error, emailError: 'Account not found');
+      state = state.copyWith(
+        status: AuthStatus.error,
+        emailError: 'Account not found',
+      );
     } else if (msg.contains('email-already-in-use')) {
-      state = state.copyWith(status: AuthStatus.error, emailError: 'Email already registered');
-    } else if (msg.contains('wrong-password') || msg.contains('INVALID_LOGIN_CREDENTIALS')) {
-      state = state.copyWith(status: AuthStatus.error, passwordError: 'Incorrect password');
+      state = state.copyWith(
+        status: AuthStatus.error,
+        emailError: 'Email already registered',
+      );
+    } else if (msg.contains('wrong-password') ||
+        msg.contains('INVALID_LOGIN_CREDENTIALS')) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        passwordError: 'Incorrect password',
+      );
     } else if (msg.contains('weak-password')) {
-      state = state.copyWith(status: AuthStatus.error, passwordError: 'Password too weak');
+      state = state.copyWith(
+        status: AuthStatus.error,
+        passwordError: 'Password too weak',
+      );
     } else if (msg.contains('network-request-failed')) {
-      state = state.copyWith(status: AuthStatus.error, generalError: 'Network connection failed');
+      state = state.copyWith(
+        status: AuthStatus.error,
+        generalError: 'Network connection failed',
+      );
     } else {
       // Clean up "Exception: " if present
       state = state.copyWith(
@@ -149,14 +170,13 @@ class AuthNotifier extends Notifier<AuthState> {
   // ---------------------------------------------------------------------------
   Future<void> logout() async {
     await _logoutUsecase();
+    await ref.read(themeProvider.notifier).setThemeMode(ThemeMode.light);
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 
   void clearError() {
     if (state.status == AuthStatus.error) {
-      state = state.copyWith(
-        status: AuthStatus.unauthenticated,
-      );
+      state = state.copyWith(status: AuthStatus.unauthenticated);
     }
   }
 }

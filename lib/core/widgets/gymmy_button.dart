@@ -17,12 +17,18 @@ class GymmyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     if (isOutlined) {
       return OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: theme.colorScheme.primary),
+          foregroundColor: isDark
+              ? const Color(0xFFF5F7FA)
+              : theme.colorScheme.primary,
+          side: BorderSide(
+            color: isDark ? const Color(0xFF2D333B) : theme.colorScheme.primary,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -37,7 +43,9 @@ class GymmyButton extends StatelessWidget {
             : Text(
                 text,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.primary,
+                  color: isDark
+                      ? const Color(0xFFF5F7FA)
+                      : theme.colorScheme.primary,
                 ),
               ),
       );
@@ -48,9 +56,7 @@ class GymmyButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 16),
         elevation: 0,
       ),

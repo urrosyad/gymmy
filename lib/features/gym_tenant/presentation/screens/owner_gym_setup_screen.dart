@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymmy/core/widgets/gymmy_app_bar_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gymmy/core/theme/app_colors.dart';
 import 'package:gymmy/core/widgets/gymmy_button.dart';
@@ -107,7 +108,9 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
     final user = ref.read(authProvider).user;
     if (user == null) return;
 
-    await ref.read(gymSetupProvider.notifier).submit(
+    await ref
+        .read(gymSetupProvider.notifier)
+        .submit(
           ownerUid: user.uid,
           name: _nameCtrl.text.trim(),
           description: _descCtrl.text.trim(),
@@ -137,7 +140,7 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Pendaftaran Gym'),
+        title: const GymmyAppBarLogo(),
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
@@ -154,7 +157,8 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(), // Force using buttons
+                physics:
+                    const NeverScrollableScrollPhysics(), // Force using buttons
                 onPageChanged: (idx) => setState(() => _currentPage = idx),
                 children: [
                   _buildStep1(theme),
@@ -180,25 +184,33 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(theme, 'Informasi Dasar', 'Mulai dengan nama dan deskripsi gym kamu.'),
+            _header(
+              theme,
+              'Informasi Dasar',
+              'Mulai dengan nama dan deskripsi gym kamu.',
+            ),
             const SizedBox(height: 32),
             GymmyInput(
               label: 'Nama Gym',
               hintText: 'cth. Iron Republic Gym',
               controller: _nameCtrl,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 24),
             Text(
               'Deskripsi',
-              style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _descCtrl,
               decoration: _deco('Deskripsi singkat tentang gym kamu'),
               maxLines: 4,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
           ],
         ),
@@ -220,19 +232,23 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
               label: 'Kota',
               hintText: 'cth. Jakarta',
               controller: _cityCtrl,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 24),
             Text(
               'Alamat Lengkap / Lokasi',
-              style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _locationCtrl,
               decoration: _deco('cth. Jl. Sudirman No. 10, Jakarta'),
               maxLines: 3,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
           ],
         ),
@@ -257,7 +273,9 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
               keyboardType: TextInputType.number,
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Wajib diisi';
-                if (double.tryParse(v) == null) return 'Harus berupa angka yang valid';
+                if (double.tryParse(v) == null) {
+                  return 'Harus berupa angka yang valid';
+                }
                 return null;
               },
             ),
@@ -269,7 +287,9 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
               keyboardType: TextInputType.number,
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Wajib diisi';
-                if (double.tryParse(v) == null) return 'Harus berupa angka yang valid';
+                if (double.tryParse(v) == null) {
+                  return 'Harus berupa angka yang valid';
+                }
                 return null;
               },
             ),
@@ -287,18 +307,25 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _header(theme, 'Fasilitas & Jam Operasional', 'Kapan gym buka dan apa yang kamu tawarkan?'),
+            _header(
+              theme,
+              'Fasilitas & Jam Operasional',
+              'Kapan gym buka dan apa yang kamu tawarkan?',
+            ),
             const SizedBox(height: 32),
             GymmyInput(
               label: 'Jam Operasional',
               hintText: 'cth. 06:00 - 22:00',
               controller: _hoursCtrl,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Wajib diisi' : null,
             ),
             const SizedBox(height: 24),
             Text(
               'Fasilitas',
-              style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -317,7 +344,9 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
                   style: IconButton.styleFrom(
                     backgroundColor: theme.colorScheme.primary,
                     foregroundColor: theme.colorScheme.onPrimary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ],
@@ -350,7 +379,11 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _header(theme, 'Tinjau & Konfirmasi', 'Pastikan semua informasi sudah benar sebelum mendaftarkan gym kamu.'),
+          _header(
+            theme,
+            'Tinjau & Konfirmasi',
+            'Pastikan semua informasi sudah benar sebelum mendaftarkan gym kamu.',
+          ),
           const SizedBox(height: 32),
           _summaryRow(theme, 'Nama', _nameCtrl.text),
           _summaryRow(theme, 'Kota', _cityCtrl.text),
@@ -358,7 +391,12 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
           _summaryRow(theme, 'Harga Membership', 'Rp ${_memberPriceCtrl.text}'),
           _summaryRow(theme, 'Jam Operasional', _hoursCtrl.text),
           const SizedBox(height: 16),
-          Text('Fasilitas', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'Fasilitas',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(_facilities.join(', '), style: theme.textTheme.bodyMedium),
         ],
@@ -376,14 +414,18 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
             flex: 2,
             child: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.lightSecondaryText),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.lightSecondaryText,
+              ),
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
               value,
-              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.right,
             ),
           ),
@@ -396,11 +438,18 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          title,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 8),
         Text(
           subtitle,
-          style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.lightSecondaryText),
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: AppColors.lightSecondaryText,
+          ),
         ),
       ],
     );
@@ -411,7 +460,9 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant)),
+        border: Border(
+          top: BorderSide(color: theme.colorScheme.outlineVariant),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -424,15 +475,14 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
           else
             const SizedBox(width: 64),
           if (_currentPage < _totalPages - 1)
-            FilledButton(
-              onPressed: _nextPage,
-              child: const Text('Lanjut'),
-            )
+            FilledButton(onPressed: _nextPage, child: const Text('Lanjut'))
           else
             GymmyButton(
               text: 'Daftarkan Gym',
               isLoading: state.isLoading,
-              onPressed: () { _submit(); },
+              onPressed: () {
+                _submit();
+              },
             ),
         ],
       ),
@@ -448,11 +498,15 @@ class _OwnerGymSetupScreenState extends ConsumerState<OwnerGymSetupScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+        borderSide: BorderSide(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+        borderSide: BorderSide(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
